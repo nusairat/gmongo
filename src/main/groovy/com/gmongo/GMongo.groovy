@@ -24,64 +24,83 @@ import com.mongodb.ServerAddress
 import com.mongodb.Mongo
 import com.mongodb.DB
 import com.mongodb.DBAddress
+import com.mongodb.MongoURI
 
 import com.gmongo.internal.DBPatcher
 
-class GMongo {
+class GMongo extends Mongo {
 	
-	@Delegate
-	Mongo mongo
+/*  @Delegate
+  Mongo mongo*/
 	
 	static DB connect(DBAddress addr) {
-		patchAndReturn Mongo.connect(addr)
+println "here"	  
+	  def db = Mongo.connect(addr)
+		patchAndReturn db
 	}
-	
+
 	GMongo(Mongo mongo) {
-		this.mongo = mongo
+	  throw new RuntimeException("not really supported")
+//		this.mongo = mongo
 	}
 	
 	GMongo() {
-		this.mongo = new Mongo()
+		super()
 	}
 	
 	GMongo(ServerAddress addr) {
-		this.mongo = new Mongo(addr)
+		super(addr)	  
+//		this.mongo = new Mongo(addr)
 	}
 	
+	GMongo(MongoURI uri) {
+	  super(uri)
+	}  
+	
 	GMongo(ServerAddress addr, MongoOptions opts) {
-		this.mongo = new Mongo(addr, opts)
+	  super(addr,opts)
+//		this.mongo = new Mongo(addr, opts)
 	}
 	
 	GMongo(ServerAddress left, ServerAddress right) {
-		this.mongo = new Mongo(left, right)
+	  super(left, right)
+//		this.mongo = new Mongo(left, right)
 	}
 	
 	GMongo(ServerAddress left, ServerAddress right, MongoOptions opts) {
-		this.mongo = new Mongo(left, right, opts)
+	  super(left, right, opts)
+//		this.mongo = new Mongo(left, right, opts)
 	}
 	
 	GMongo(String host) {
-		this.mongo = new Mongo(host)
+	  super(host)
+//		this.mongo = new Mongo(host)
 	}
 	
 	GMongo(String host, Integer port) {
-		this.mongo = new Mongo(host, port)
+	  super(host,port)
+//		this.mongo = new Mongo(host, port)
 	}
 	
 	GMongo(String host, MongoOptions opts) {
-		this.mongo = new Mongo(host, opts)
+	  super(host, opts)
+	//	this.mongo = new Mongo(host, opts)
 	}
 	
-	GMongo( List<ServerAddress> replicaSetSeeds, MongoOptions options ) {
-		this.mongo = new Mongo(replicaSetSeeds, opts)
+	GMongo(List<ServerAddress> replicaSetSeeds, MongoOptions options ) {
+	  super(replicaSetSeeds, options)
+//		this.mongo = new Mongo(replicaSetSeeds, opts)
 	}
 	
 	GMongo( List<ServerAddress> replicaSetSeeds) {
-		this.mongo = new Mongo(replicaSetSeeds)
+	  super(replicaSetSeeds)
+//		this.mongo = new Mongo(replicaSetSeeds)
 	}
 	
 	DB getDB(String name) {
-		patchAndReturn mongo.getDB(name)
+	  def db = super.getDB(name)
+	  patchAndReturn db
+		//patchAndReturn mongo.getDB(name)
 	}
 	
 	static private patchAndReturn(db) {
