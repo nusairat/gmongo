@@ -55,6 +55,7 @@ class Patcher {
 		def size = (args instanceof List) ? args.size() : args.length
 		def convertedArgs = []
 		for (def i = 0; i < size; i++) {
+		  /*
 			if (args[i] instanceof List) {
 				convertedArgs[i] = _convert(args[i])
 				continue
@@ -64,6 +65,28 @@ class Patcher {
 				continue
 			}
 			convertedArgs[i] = (args[i] as BasicDBObject)
+			*/
+			if (args[i] instanceof List) {
+				convertedArgs[i] = _convert(args[i])				
+			}
+			// My modifications.
+			else if (args[i] instanceof org.codehaus.groovy.runtime.wrappers.PojoWrapper) {
+			  // Odds are this happened because you passed in "map as BasicDBWrapper"
+			  // So we'll be forced for now to assume that and add convertedArgs[i] as that
+			  // Since this is the most common item you pass into it
+        if (String.valueOf(args[i]) != 'null') {
+          convertedArgs[i] = new BasicDBObject(args[i])                    
+        } 
+        else {
+          convertedArgs[i] = new BasicDBObject()
+		    }
+			}			
+			else if ((!(args[i] instanceof Map)) || (args[i] instanceof DBObject)) {
+				convertedArgs[i] = args[i]
+			}
+			else {
+			  convertedArgs[i] = (args[i] as BasicDBObject)
+		  }
 		}
 		return ((args instanceof List) ? convertedArgs : (convertedArgs as Object[]))
 	}
