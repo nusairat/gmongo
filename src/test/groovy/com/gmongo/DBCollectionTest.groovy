@@ -104,6 +104,16 @@ class DBCollectionTest extends IntegrationTestCase {
 		assertEquals 'Foo', foo.key
 	}
 	
+	/**
+	 * This test is needed since metaClassing will handle the as passed in differently.
+	 */
+	void testFindOneWithUsingOlderNotation() {
+		_insert(['Bar','Foo'])	  
+	  def foo = db.getCollection("foo").findOne([key: 'Foo'] as BasicDBObject)
+		assertNotNull foo
+		assertEquals 'Foo', foo.key
+	}
+	
 	void testFindOneFields() {
 		db.foo << [foo: 10, bar: 20]
 		def obj = db.foo.findOne([:], [bar: 1])
